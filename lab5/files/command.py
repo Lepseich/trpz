@@ -1,40 +1,34 @@
-class Command:
-    """Інтерфейс команди."""
+from abc import ABC, abstractmethod
+
+# Базовий клас команди
+class Command(ABC):
+    @abstractmethod
     def execute(self):
         pass
 
-class RecordMacroCommand(Command):
-    """Команда для запису макросу."""
+# Конкретна команда для оновлення статусу
+class UpdateStatusCommand(Command):
+    def __init__(self, status_updater, status):
+        self.status_updater = status_updater
+        self.status = status
+
     def execute(self):
-        print("Запис макросу розпочато.")
+        self.status_updater.updateStatus(self.status)
 
-class StopRecordingCommand(Command):
-    """Команда для зупинки запису макросу."""
+# Конкретна команда для завантаження файлів
+class DownloadFileCommand(Command):
+    def __init__(self, file_downloader, url):
+        self.file_downloader = file_downloader
+        self.url = url
+
     def execute(self):
-        print("Запис макросу зупинено.")
+        self.file_downloader.downloadFile(self.url)
 
-class PlayMacroCommand(Command):
-    """Команда для відтворення макросу."""
+# Конкретна команда для виконання скриптів
+class ExecuteScriptCommand(Command):
+    def __init__(self, script_executor, script):
+        self.script_executor = script_executor
+        self.script = script
+
     def execute(self):
-        print("Відтворення макросу.")
-
-class MacroController:
-    """Клас, що управляє командами."""
-    def __init__(self):
-        self.commands = []
-
-    def add_command(self, command: Command):
-        self.commands.append(command)
-
-    def execute_commands(self):
-        for command in self.commands:
-            command.execute()
-
-if __name__ == "__main__":
-    controller = MacroController()
-
-    controller.add_command(RecordMacroCommand())
-    controller.add_command(StopRecordingCommand())
-    controller.add_command(PlayMacroCommand())
-
-    controller.execute_commands()
+        self.script_executor.executeScript(self.script)
